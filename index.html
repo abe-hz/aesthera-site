@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aesthera — The Retention App for Medspas</title>
+  <meta name="description" content="Aesthera gives your medspa a branded mobile app with memberships, rewards, and automated offers that keep patients coming back — on autopilot.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&family=Manrope:wght@300..800&display=swap" rel="stylesheet">
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <style>
+    :root {
+      --c-base: #011227;
+      --c-surface: #041C35;
+      --c-raised: #0A2744;
+      --c-gold: #C9A84C;
+      --c-gold-h: #D4B366;
+      --c-gold-dim: rgba(201, 168, 76, 0.10);
+      --c-gold-border: rgba(201, 168, 76, 0.25);
+      --c-cream: #F7F5F0;
+      --t-hi: #EDE9E3;
+      --t-lo: #7A8899;
+      --t-dark: #011227;
+      --t-dim: #5A6573;
+      --b-dark: rgba(255,255,255,0.06);
+      --b-light: rgba(1,18,39,0.08);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --font-d: 'Spectral', Georgia, serif;
+      --font-b: 'Manrope', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-b);
+      font-size: 1.0625rem;
+      line-height: 1.65;
+      color: var(--t-dark);
+      background: var(--c-base);
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    button { border: none; cursor: pointer; font-family: inherit; background: none; }
+
+    /* ── Layout ── */
+    .wrap {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding-inline: clamp(1.25rem, 4vw, 2rem);
+    }
+    .s-dark { background: var(--c-base); color: var(--t-hi); }
+    .s-cream { background: var(--c-cream); color: var(--t-dark); }
+    section { padding-block: clamp(5rem, 8vw, 7rem); }
+
+    /* ── Typography ── */
+    h1, h2, h3 { font-family: var(--font-d); line-height: 1.1; }
+    h1 { font-size: clamp(2.75rem, 5vw + 1rem, 4.25rem); font-weight: 700; letter-spacing: -0.01em; }
+    h2 { font-size: clamp(2rem, 3.5vw + 0.5rem, 3rem); font-weight: 700; letter-spacing: -0.01em; }
+    h3 { font-family: var(--font-b); font-size: 1.25rem; font-weight: 700; line-height: 1.3; }
+
+    .label {
+      font-family: var(--font-b);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--c-gold);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .label::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--c-gold);
+      flex-shrink: 0;
+    }
+
+    .section-sub { max-width: 52ch; line-height: 1.7; }
+    .s-dark .section-sub { color: var(--t-lo); }
+    .s-cream .section-sub { color: var(--t-dim); }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.9375rem 1.75rem;
+      border-radius: 4px;
+      font-family: var(--font-b);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      transition: background 0.35s var(--ease), transform 0.35s var(--ease);
+    }
+    .btn--gold { background: var(--c-gold); color: var(--c-base); }
+    .btn--gold:hover { background: var(--c-gold-h); transform: translateY(-2px); }
+    .btn--lg { padding: 1.0625rem 2.25rem; font-size: 1rem; }
+    .btn__arrow { transition: transform 0.35s var(--ease); font-size: 1.125rem; }
+    .btn:hover .btn__arrow { transform: translateX(4px); }
+
+    /* ── Shimmer Button ── */
+    .shimmer-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.625rem;
+      padding: 1.0625rem 2.25rem;
+      border-radius: 6px;
+      color: var(--c-base);
+      font-family: var(--font-b);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.2);
+      z-index: 0;
+      transition: transform 0.3s ease;
+    }
+    .shimmer-btn:active { transform: translateY(1px); }
+    .shimmer-btn__spark {
+      position: absolute;
+      inset: -1px;
+      z-index: -3;
+      overflow: hidden;
+      border-radius: inherit;
+      filter: blur(2px);
+    }
+    .shimmer-btn__slide {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      aspect-ratio: 1;
+      animation: shimmer-slide 3s ease-in-out infinite;
+    }
+    .shimmer-btn__spin {
+      position: absolute;
+      inset: -100%;
+      animation: spin-around 4s linear infinite;
+      background: conic-gradient(from 225deg, transparent 0, rgba(255,255,255,0.7) 90deg, transparent 90deg);
+    }
+    .shimmer-btn__bg {
+      position: absolute;
+      inset: 1.5px;
+      z-index: -2;
+      border-radius: 5px;
+      background: var(--c-gold);
+    }
+    .shimmer-btn__glow {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 -8px 10px rgba(255,255,255,0.12);
+      pointer-events: none;
+      transition: box-shadow 0.3s;
+    }
+    .shimmer-btn:hover .shimmer-btn__glow {
+      box-shadow: inset 0 -6px 10px rgba(255,255,255,0.22);
+    }
+    .shimmer-btn__text {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+    .shimmer-btn__text .btn__arrow {
+      transition: transform 0.35s var(--ease);
+      font-size: 1.125rem;
+    }
+    .shimmer-btn:hover .btn__arrow { transform: translateX(4px); }
+    @keyframes shimmer-slide {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(100%); }
+    }
+    @keyframes spin-around {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Navigation ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding-block: 1.25rem;
+      background: var(--c-base);
+      transition: padding 0.4s var(--ease);
+    }
+    .nav.scrolled { padding-block: 0.75rem; border-bottom: 1px solid var(--b-dark); }
+    .nav__inner { display: flex; align-items: center; justify-content: space-between; }
+    .nav__logo { display: flex; align-items: center; gap: 0.625rem; }
+    .nav__logo svg { flex-shrink: 0; }
+    .nav__wordmark {
+      font-family: var(--font-b); font-size: 1.25rem; font-weight: 700;
+      color: var(--t-hi); letter-spacing: 0.08em;
+    }
+    .nav__menu { display: flex; align-items: center; gap: 2.25rem; }
+    .nav__menu a { font-size: 0.9375rem; font-weight: 500; color: var(--t-lo); transition: color 0.25s; }
+    .nav__menu a:hover { color: var(--t-hi); }
+    .nav__cta { display: block; }
+    .nav__cta .btn { padding: 0.625rem 1.25rem; font-size: 0.875rem; }
+    .nav__toggle {
+      display: none; flex-direction: column; gap: 6px; padding: 6px; z-index: 110;
+    }
+    .nav__toggle span {
+      display: block; width: 22px; height: 1.5px; background: var(--t-hi);
+      transition: transform 0.35s var(--ease), opacity 0.25s; transform-origin: center;
+    }
+    .nav__toggle.active span:first-child { transform: translateY(3.75px) rotate(45deg); }
+    .nav__toggle.active span:last-child { transform: translateY(-3.75px) rotate(-45deg); }
+
+    .mobile-menu {
+      position: fixed; inset: 0; background: var(--c-base); z-index: 99;
+      display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+      padding: 2rem clamp(1.25rem, 4vw, 2rem); gap: 2rem;
+      opacity: 0; pointer-events: none; transition: opacity 0.35s var(--ease);
+    }
+    .mobile-menu.active { opacity: 1; pointer-events: auto; }
+    .mobile-menu a { font-size: 1.75rem; font-weight: 600; color: var(--t-hi); font-family: var(--font-d); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100svh; display: flex; align-items: center;
+      padding-top: 6rem; background: var(--c-cream); color: var(--t-dark);
+    }
+    .hero__inner {
+      display: grid; grid-template-columns: 55% 1fr;
+      gap: clamp(2rem, 4vw, 4rem); align-items: center;
+    }
+    .hero__title { color: var(--t-dark); }
+    .hero__title em { font-style: italic; color: var(--c-gold); display: block; }
+    .hero .label { color: var(--c-gold); }
+    .hero__sub {
+      margin-top: 1.5rem; color: var(--t-dim); max-width: 48ch;
+      line-height: 1.75; font-size: 1.0625rem;
+    }
+    .hero__actions { display: flex; align-items: center; gap: 1.5rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .hero__link {
+      font-weight: 500; color: var(--t-dim);
+      border-bottom: 1px solid var(--b-light); padding-bottom: 2px;
+      transition: color 0.25s, border-color 0.25s;
+    }
+    .hero__link:hover { color: var(--t-dark); border-color: var(--t-dark); }
+    .hero__note { margin-top: 1.5rem; font-size: 0.8125rem; color: var(--t-dim); opacity: 0.7; }
+
+    /* ── iPhone Mockup + Blur Fade ── */
+    .hero__visual { display: flex; justify-content: center; position: relative; }
+    @keyframes blurFadeIn {
+      from { opacity: 0; filter: blur(12px); transform: translateY(24px); }
+      to { opacity: 1; filter: blur(0px); transform: none; }
+    }
+    .hero__visual { animation: blurFadeIn 1.1s ease-out 0.5s both; }
+
+    /* ── iPhone Mockup ── */
+    .phone-visual {
+      position: relative;
+      width: 450px;
+      flex-shrink: 0;
+      transform: rotate(-3deg);
+    }
+    .iphone-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+    .iphone { width: 280px; position: relative; transform: rotate(-3deg); flex-shrink: 0; }
+    .iphone__frame {
+      background: linear-gradient(145deg, #2c2c30, #111113, #1e1e22);
+      border-radius: 48px; padding: 10px; position: relative;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.10),
+        0 40px 80px rgba(1,18,39,0.32),
+        0 12px 28px rgba(1,18,39,0.20),
+        0 2px 6px rgba(0,0,0,0.30);
+    }
+    .iphone__frame::before {
+      content: '';
+      position: absolute; left: -3px; top: 84px;
+      width: 3px; height: 28px;
+      background: linear-gradient(180deg, #2a2a2e, #1a1a1c);
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 36px 0 #1e1e22, 0 60px 0 #1e1e22;
+    }
+    .iphone__frame::after {
+      content: '';
+      position: absolute; right: -3px; top: 118px;
+      width: 3px; height: 52px;
+      background: linear-gradient(180deg, #2a2a2e, #1a1a1c);
+      border-radius: 0 2px 2px 0;
+    }
+    .iphone__notch {
+      position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 24px;
+      background: #000; border-radius: 12px; z-index: 2;
+    }
+    .iphone__screen {
+      width: 100%; aspect-ratio: 9 / 19.5;
+      background: #FAFAFA;
+      border-radius: 40px; overflow: hidden;
+      display: flex; flex-direction: column;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+    }
+    /* Status bar */
+    .phone__statusbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 18px 0; position: relative; z-index: 3; flex-shrink: 0;
+    }
+    .phone__time { font-size: 0.625rem; font-weight: 700; color: #011227; font-family: var(--font-b); }
+    .phone__indicators { display: flex; align-items: center; gap: 3px; }
+    .phone__indicators svg { display: block; }
+    /* App header */
+    .phone__topbar {
+      display: flex; align-items: center; padding: 7px 14px 7px;
+      background: #fff; flex-shrink: 0;
+    }
+    .phone__clinic-logo {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .phone__clinic-logo svg { width: 30px; height: 30px; }
+    .phone__bag-icon {
+      margin-left: auto;
+      font-size: 0.875rem; color: #555;
+    }
+    /* Hero banner image area */
+    .phone__hero-banner {
+      flex-shrink: 0; position: relative;
+      height: 110px; overflow: hidden;
+      background: linear-gradient(160deg, #6B4C3B 0%, #8B6251 30%, #A07060 60%, #B89070 100%);
+    }
+    .phone__hero-text {
+      position: absolute; bottom: 0; left: 0; padding: 10px 14px;
+    }
+    .phone__hero-welcome { display: block; font-size: 0.65rem; color: rgba(255,255,255,0.75); font-family: var(--font-b); }
+    .phone__hero-name { display: block; font-size: 1rem; font-weight: 800; color: #fff; font-family: var(--font-b); line-height: 1.15; }
+    .phone__hero-clinic { display: block; font-size: 0.5rem; color: rgba(255,255,255,0.6); font-family: var(--font-b); margin-top: 1px; }
+    .phone__reward-badge {
+      position: absolute; bottom: 10px; right: 10px;
+      background: #fff; border-radius: 8px;
+      display: flex; align-items: center; gap: 4px;
+      padding: 4px 8px 4px 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .phone__reward-badge span { font-size: 0.4rem; color: #333; font-family: var(--font-b); line-height: 1.3; }
+    /* Points card */
+    .phone__points-card {
+      margin: 10px 12px 0; padding: 8px 12px;
+      background: #fff; border-radius: 12px;
+      display: flex; align-items: center; gap: 6px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .phone__points-val { font-size: 0.8125rem; font-weight: 800; color: #E05578; font-family: var(--font-b); }
+    .phone__points-lbl { font-size: 0.4375rem; color: #777; font-family: var(--font-b); flex: 1; }
+    .phone__points-arrow { font-size: 0.6875rem; color: #E05578; }
+    /* Birthday */
+    .phone__bday-section {
+      flex: 1; background: #F3F4F6;
+      padding: 10px 12px 0; display: flex; flex-direction: column; align-items: center;
+    }
+    .phone__bday-title { font-size: 0.75rem; font-weight: 800; color: #1a1a2e; font-family: var(--font-b); text-align: center; }
+    .phone__bday-sub { font-size: 0.45rem; color: #777; font-family: var(--font-b); margin-top: 1px; text-align: center; }
+    .phone__unwrap-btn {
+      margin: 6px 0 0; padding: 4px 14px; border-radius: 8px;
+      background: #1C1C1E; color: #fff; font-size: 0.4375rem;
+      font-weight: 600; font-family: var(--font-b);
+    }
+    .phone__gift-wrap {
+      margin-top: 4px; width: 100%; border-radius: 10px; overflow: hidden;
+      flex: 1; min-height: 0;
+      background: #E8C49A; position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .phone__gift-ribbon-v {
+      position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 14px; background: #C0392B; z-index: 1;
+    }
+    .phone__gift-ribbon-h {
+      position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+      height: 14px; background: #C0392B; z-index: 1;
+    }
+    .phone__gift-ribbon-diag1 {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(18deg);
+      width: 100%; height: 9px; background: #E91E63; opacity: 0.5; z-index: 0;
+    }
+    .phone__gift-ribbon-diag2 {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(-18deg);
+      width: 100%; height: 9px; background: #E91E63; opacity: 0.5; z-index: 0;
+    }
+    .phone__gift-bow { position: absolute; top: 4px; left: 50%; transform: translateX(-50%); font-size: 1.1rem; z-index: 2; line-height: 1; }
+    .phone__gift-tag {
+      position: absolute; bottom: 8px; left: 14px; z-index: 2;
+      background: #fff; border-radius: 4px; padding: 3px 6px;
+      font-size: 0.4375rem; font-style: italic; color: #333;
+      transform: rotate(-5deg); font-family: var(--font-b);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+    /* Bottom tab bar */
+    .phone__tabs {
+      display: flex; justify-content: space-around;
+      padding: 6px 0 8px; border-top: 1px solid #E8E8E8; background: #fff; flex-shrink: 0;
+    }
+    .phone__tab-item { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+    .phone__tab-item span { font-size: 0.3125rem; color: #999; font-family: var(--font-b); font-weight: 500; }
+    .phone__tab-item.active span { color: #E05578; font-weight: 700; }
+    .phone__tab-icon { display: block; font-size: 0.75rem; }
+
+    /* ── Testimonial Marquee ── */
+    .marquee-section {
+      background: var(--c-base); padding-block: 2.5rem;
+      overflow: hidden; position: relative;
+    }
+    .marquee-section::before, .marquee-section::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none;
+    }
+    .marquee-section::before { left: 0; background: linear-gradient(to right, var(--c-base), transparent); }
+    .marquee-section::after { right: 0; background: linear-gradient(to left, var(--c-base), transparent); }
+    .marquee-track {
+      display: flex; gap: 1.5rem;
+      animation: marquee 45s linear infinite; width: max-content;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .marquee-card {
+      flex-shrink: 0; width: 320px; padding: 1.5rem;
+      background: var(--c-surface); border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .marquee-stars { color: var(--c-gold); font-size: 0.8125rem; letter-spacing: 2px; margin-bottom: 0.75rem; }
+    .marquee-quote { font-size: 0.9375rem; color: var(--t-hi); line-height: 1.65; margin-bottom: 1rem; }
+    .marquee-author { font-size: 0.8125rem; font-weight: 600; color: var(--t-lo); }
+    .marquee-role { font-size: 0.75rem; color: var(--t-lo); opacity: 0.7; }
+
+    /* ── Problem + Magic Card ── */
+    .problem {
+      height: 100svh; display: flex; align-items: center;
+      padding-block: clamp(2rem, 3.5vw, 3.5rem);
+    }
+    .problem__inner { width: 100%; }
+    .problem__header {
+      text-align: center; max-width: 40rem;
+      margin: 0 auto clamp(1.5rem, 3vw, 2.5rem);
+    }
+    .problem__header .label { justify-content: center; }
+    .problem__header .label::before { display: none; }
+    .problem__header h2 { margin-bottom: 0.5rem; }
+    .problem__header .section-sub { margin-inline: auto; text-align: center; }
+    .problem__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+    /* Magic Card effect */
+    .magic-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      padding: 1.75rem;
+      background:
+        linear-gradient(#fff 0 0) padding-box,
+        radial-gradient(250px circle at var(--mx, -250px) var(--my, -250px), var(--c-gold), rgba(201,168,76,0.25), rgba(1,18,39,0.08) 100%) border-box;
+      border: 1px solid transparent;
+      cursor: default;
+      transition: box-shadow 0.3s;
+    }
+    .magic-card::before {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      background: #fff;
+      z-index: 0;
+    }
+    .magic-card::after {
+      content: '';
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      background: radial-gradient(250px circle at var(--mx, -250px) var(--my, -250px), rgba(201,168,76,0.07), transparent 100%);
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .magic-card:hover::after { opacity: 1; }
+    .magic-card:hover {
+      box-shadow: 0 8px 24px rgba(1,18,39,0.06);
+    }
+    .magic-card > * { position: relative; z-index: 2; }
+
+    .problem__num {
+      font-family: var(--font-d); font-size: 2rem; font-weight: 700;
+      color: var(--c-gold); line-height: 1; display: block; margin-bottom: 0.75rem;
+    }
+    .magic-card h3 { margin-bottom: 0.375rem; color: var(--t-dark); font-size: 1.0625rem; }
+    .magic-card p { color: var(--t-dim); line-height: 1.6; font-size: 0.875rem; }
+
+    /* ── Features + Icons ── */
+    .features__head { max-width: 32rem; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+    .features__head h2 { color: var(--t-hi); }
+    .features__head em { font-style: italic; color: var(--t-lo); font-weight: 400; }
+    .features__head .section-sub { margin-top: 1rem; }
+    .features__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--b-dark);
+    }
+    .feature {
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--b-dark);
+    }
+    .feature:nth-child(odd) { padding-right: 2.5rem; }
+    .feature:nth-child(even) { padding-left: 2.5rem; border-left: 1px solid var(--b-dark); }
+    .feature__header {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 0.625rem;
+    }
+    .feature__icon {
+      width: 32px; height: 32px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 6px;
+      background: rgba(201,168,76,0.1);
+    }
+    .feature__icon svg { width: 18px; height: 18px; }
+    .feature h3 { color: var(--t-hi); font-size: 1.125rem; }
+    .feature p { color: var(--t-lo); font-size: 0.9375rem; line-height: 1.7; max-width: 38ch; }
+    .feature__stat {
+      display: inline-block; margin-top: 1rem;
+      font-size: 0.8125rem; font-weight: 600; color: var(--c-gold);
+    }
+
+    /* ── Process ── */
+    .process__head { max-width: 32rem; margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+    .process__head h2 { margin-bottom: 1rem; }
+    .process__steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; position: relative; }
+    .process__step { position: relative; }
+    .process__num {
+      font-family: var(--font-d); font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 700;
+      color: var(--c-gold); line-height: 1; display: block; margin-bottom: 1.25rem;
+    }
+    .process__step h3 { margin-bottom: 0.5rem; }
+    .process__step p { color: var(--t-dim); line-height: 1.65; max-width: 32ch; }
+    .process__line {
+      position: absolute; top: 2.5rem; right: -1rem;
+      width: calc(2rem); height: 1px; background: var(--b-light);
+    }
+
+    /* ── Proof + Number Ticker ── */
+    .proof { padding-block: clamp(4rem, 7vw, 6rem); }
+    .proof__grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
+      margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    }
+    .proof__num {
+      font-family: var(--font-d); font-size: clamp(2.5rem, 4.5vw, 3.75rem); font-weight: 700;
+      color: var(--c-gold); line-height: 1; display: block; margin-bottom: 0.75rem;
+      tabular-nums: true; font-variant-numeric: tabular-nums;
+    }
+    .proof__stat p { font-size: 0.875rem; color: var(--t-lo); line-height: 1.5; max-width: 22ch; }
+
+    /* ── FAQ ── */
+    .faq__inner {
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: clamp(2rem, 5vw, 4rem); align-items: start;
+    }
+    .faq__head h2 { margin-bottom: 0.75rem; }
+    .faq__head p { color: var(--t-dim); max-width: 28ch; }
+    details.faq__item { border-bottom: 1px solid var(--b-light); }
+    details.faq__item:first-of-type { border-top: 1px solid var(--b-light); }
+    details.faq__item summary {
+      padding: 1.375rem 0; font-family: var(--font-b); font-size: 1rem; font-weight: 600;
+      cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      color: var(--t-dark);
+    }
+    details.faq__item summary::-webkit-details-marker { display: none; }
+    details.faq__item summary::after {
+      content: '+'; font-size: 1.375rem; font-weight: 300; color: var(--c-gold);
+      transition: transform 0.35s var(--ease); flex-shrink: 0;
+    }
+    details.faq__item[open] summary::after { transform: rotate(45deg); }
+    details.faq__item .faq__answer {
+      padding-bottom: 1.375rem; color: var(--t-dim);
+      line-height: 1.7; max-width: 58ch; font-size: 0.9375rem;
+    }
+
+    /* ── CTA ── */
+    .cta {
+      text-align: center; display: flex; flex-direction: column; align-items: center;
+      padding-block: clamp(5rem, 9vw, 8rem);
+    }
+    .cta h2 { color: var(--t-hi); margin-bottom: 1.25rem; }
+    .cta .section-sub { text-align: center; margin-bottom: 2.5rem; }
+    .cta__note { margin-top: 1.25rem; font-size: 0.8125rem; color: var(--t-lo); opacity: 0.7; }
+
+    /* ── Footer ── */
+    .footer { background: #010D1E; padding-block: 2.5rem; }
+    .footer__inner {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer__brand { display: flex; align-items: center; gap: 0.5rem; }
+    .footer__brand span { font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.08em; color: var(--t-hi); }
+    .footer__copy { font-size: 0.8125rem; color: var(--t-lo); }
+    .footer__links { display: flex; gap: 1.5rem; }
+    .footer__links a { font-size: 0.8125rem; color: var(--t-lo); transition: color 0.2s; }
+    .footer__links a:hover { color: var(--t-hi); }
+
+    /* ── Entrance Animations ── */
+    @keyframes up {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: none; }
+    }
+    .hero .label       { animation: up 0.7s var(--ease) 0.15s both; }
+    .hero__title        { animation: up 0.7s var(--ease) 0.25s both; }
+    .hero__sub          { animation: up 0.7s var(--ease) 0.4s both; }
+    .hero__actions      { animation: up 0.7s var(--ease) 0.55s both; }
+    .hero__note         { animation: up 0.7s var(--ease) 0.65s both; }
+
+    [data-r] {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+    }
+    [data-r].shown { opacity: 1; transform: none; }
+    [data-r][data-d="1"] { transition-delay: 0.08s; }
+    [data-r][data-d="2"] { transition-delay: 0.16s; }
+    [data-r][data-d="3"] { transition-delay: 0.24s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .hero__inner { grid-template-columns: 1fr; gap: 3rem; }
+      .hero__visual { justify-content: flex-start; }
+      .features__grid { grid-template-columns: 1fr; }
+      .feature:nth-child(even) { padding-left: 0; border-left: none; }
+      .feature:nth-child(odd) { padding-right: 0; }
+      .proof__grid { grid-template-columns: 1fr 1fr; }
+      .faq__inner { grid-template-columns: 1fr; }
+      .problem { height: auto; min-height: 100svh; }
+    }
+    @media (max-width: 640px) {
+      .nav__menu, .nav__cta { display: none; }
+      .nav__toggle { display: flex; }
+      .hero { min-height: auto; padding-top: 7rem; padding-bottom: 3rem; }
+      .phone-visual { width: 240px; }
+      .problem { height: auto; }
+      .problem__grid { grid-template-columns: 1fr; }
+      .process__steps { grid-template-columns: 1fr; gap: 2.5rem; }
+      .process__line { display: none; }
+      .process__step p { max-width: none; }
+      .proof__grid { gap: 1.5rem; }
+      .footer__inner { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .marquee-card { width: 260px; padding: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav class="nav" id="nav">
+    <div class="wrap nav__inner">
+      <a href="#" class="nav__logo">
+        <img src="aesthera-logo.png" alt="Aesthera" style="height:44px;width:auto;display:block;" />
+        <span class="nav__wordmark">AESTHERA</span>
+      </a>
+      <div class="nav__menu">
+        <a href="#problem">Why Aesthera</a>
+        <a href="#features">Features</a>
+        <a href="#process">How It Works</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="nav__cta">
+        <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/abraham-aesthera/30min'});return false;" class="btn btn--gold">Book a Consultation</a>
+      </div>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#problem" onclick="toggleMenu()">Why Aesthera</a>
+    <a href="#features" onclick="toggleMenu()">Features</a>
+    <a href="#process" onclick="toggleMenu()">How It Works</a>
+    <a href="#faq" onclick="toggleMenu()">FAQ</a>
+    <a href="" class="btn btn--gold" onclick="toggleMenu();Calendly.initPopupWidget({url:'https://calendly.com/abraham-aesthera/30min'});return false;">Book a Consultation</a>
+  </div>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="wrap hero__inner">
+      <div class="hero__content">
+        <p class="label">For Medspa and Aesthetic Clinic Owners</p>
+        <h1 class="hero__title">
+          Losing patients between visits?
+          <em>We bring them back.</em>
+        </h1>
+        <p class="hero__sub">
+          Aesthera gives your medspa a branded mobile app with memberships, rewards, and automated offers that keep patients engaged, spending, and returning — on autopilot.
+        </p>
+        <div class="hero__actions">
+          <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/abraham-aesthera/30min'});return false;" class="shimmer-btn">
+            <div class="shimmer-btn__spark">
+              <div class="shimmer-btn__slide">
+                <div class="shimmer-btn__spin"></div>
+              </div>
+            </div>
+            <div class="shimmer-btn__bg"></div>
+            <div class="shimmer-btn__glow"></div>
+            <span class="shimmer-btn__text">
+              Book Your Free Consultation
+              <span class="btn__arrow">→</span>
+            </span>
+          </a>
+          <a href="#process" class="hero__link">See how it works</a>
+        </div>
+        <p class="hero__note">No commitment. No credit card. Just a conversation.</p>
+      </div>
+      <div class="hero__visual">
+        <div class="phone-visual">
+          <img src="phone-mockup.png" class="iphone-img" alt="" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TESTIMONIAL MARQUEE ─── -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"Since launching the app, our rebooking rate jumped 34%. Patients actually come back now."</p>
+        <p class="marquee-author">Dr. Lisa Chen</p>
+        <p class="marquee-role">Glow Aesthetics · Scottsdale, AZ</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"The loyalty program alone pays for itself. My patients love earning rewards every visit."</p>
+        <p class="marquee-author">Sarah Martinez</p>
+        <p class="marquee-role">Radiance MedSpa · Austin, TX</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"We went from zero memberships to 47 recurring members in three months. Game changer."</p>
+        <p class="marquee-author">Dr. James Wilson</p>
+        <p class="marquee-role">Elite Skin Studio · Nashville, TN</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"Setup was incredibly fast. Our app was live in under two days with zero effort from us."</p>
+        <p class="marquee-author">Michelle Torres</p>
+        <p class="marquee-role">Bloom Beauty Bar · Miami, FL</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"The automated birthday campaigns bring in patients we hadn't seen in months."</p>
+        <p class="marquee-author">Dr. Priya Sharma</p>
+        <p class="marquee-role">Aura Aesthetics · Denver, CO</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"Finally a system that works while I focus on treatments instead of chasing patients."</p>
+        <p class="marquee-author">Nicole Adams</p>
+        <p class="marquee-role">Pure Skin Clinic · San Diego, CA</p>
+      </div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"Since launching the app, our rebooking rate jumped 34%. Patients actually come back now."</p>
+        <p class="marquee-author">Dr. Lisa Chen</p>
+        <p class="marquee-role">Glow Aesthetics · Scottsdale, AZ</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"The loyalty program alone pays for itself. My patients love earning rewards every visit."</p>
+        <p class="marquee-author">Sarah Martinez</p>
+        <p class="marquee-role">Radiance MedSpa · Austin, TX</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"We went from zero memberships to 47 recurring members in three months. Game changer."</p>
+        <p class="marquee-author">Dr. James Wilson</p>
+        <p class="marquee-role">Elite Skin Studio · Nashville, TN</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"Setup was incredibly fast. Our app was live in under two days with zero effort from us."</p>
+        <p class="marquee-author">Michelle Torres</p>
+        <p class="marquee-role">Bloom Beauty Bar · Miami, FL</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"The automated birthday campaigns bring in patients we hadn't seen in months."</p>
+        <p class="marquee-author">Dr. Priya Sharma</p>
+        <p class="marquee-role">Aura Aesthetics · Denver, CO</p>
+      </div>
+      <div class="marquee-card">
+        <div class="marquee-stars">★★★★★</div>
+        <p class="marquee-quote">"Finally a system that works while I focus on treatments instead of chasing patients."</p>
+        <p class="marquee-author">Nicole Adams</p>
+        <p class="marquee-role">Pure Skin Clinic · San Diego, CA</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── PROBLEM (Magic Cards) ─── -->
+  <section class="problem s-cream" id="problem">
+    <div class="wrap problem__inner">
+      <div class="problem__header" data-r>
+        <p class="label">The Problem</p>
+        <h2>Your Best Patients Are Slipping Away</h2>
+        <p class="section-sub">Most medspas have no system to keep patients engaged between visits. The result? Inconsistent revenue and a constant scramble for new faces.</p>
+      </div>
+      <div class="problem__grid">
+        <div class="magic-card" data-r>
+          <span class="problem__num">01</span>
+          <h3>Zero Engagement Between Visits</h3>
+          <p>After patients leave, you have no way to stay top of mind. No reminders, no offers, no connection — until they maybe remember to call back.</p>
+        </div>
+        <div class="magic-card" data-r data-d="1">
+          <span class="problem__num">02</span>
+          <h3>Inconsistent Rebooking</h3>
+          <p>Your front desk is too busy for follow-up calls. Patients forget, get distracted, or find somewhere closer. Without a system, rebooking is a gamble.</p>
+        </div>
+        <div class="magic-card" data-r data-d="2">
+          <span class="problem__num">03</span>
+          <h3>Revenue Depends on New Patients</h3>
+          <p>You spend 5–7× more acquiring new patients than retaining existing ones. It's an expensive cycle that eats into your margins every single month.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FEATURES (with icons) ─── -->
+  <section class="s-dark" id="features">
+    <div class="wrap">
+      <div class="features__head" data-r>
+        <p class="label">What You Get</p>
+        <h2>Everything Your Medspa Needs. <em>Nothing it doesn't.</em></h2>
+        <p class="section-sub">A fully branded mobile app — built, launched, and managed for your practice.</p>
+      </div>
+      <div class="features__grid">
+        <div class="feature" data-r>
+          <div class="feature__header">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c-2.5-2.8-4-6.3-4-9s1.5-6.2 4-9m0 18c2.5-2.8 4-6.3 4-9s-1.5-6.2-4-9m-9 9a9 9 0 0 1 9-9"/></svg>
+            </div>
+            <h3>Smart Memberships</h3>
+          </div>
+          <p>Recurring monthly subscriptions with automated billing, configurable benefits, and team sales tracking. Predictable revenue, every month.</p>
+          <span class="feature__stat">Auto-retry with dunning alerts</span>
+        </div>
+        <div class="feature" data-r data-d="1">
+          <div class="feature__header">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <h3>Loyalty & Rewards</h3>
+          </div>
+          <p>Milestone-based points earned through check-ins, purchases, and reviews. Patients who unlock 3 rewards become lifelong loyal clients.</p>
+          <span class="feature__stat">Cash-convertible rewards drive repeat visits</span>
+        </div>
+        <div class="feature" data-r>
+          <div class="feature__header">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+            </div>
+            <h3>Automated Campaigns</h3>
+          </div>
+          <p>9 seasonal campaigns run on autopilot — birthdays, holidays, anniversaries. Each with personalized offers based on individual browsing behavior.</p>
+          <span class="feature__stat">+158% more sales with voice notes</span>
+        </div>
+        <div class="feature" data-r data-d="1">
+          <div class="feature__header">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            </div>
+            <h3>Buy Now, Pay Later</h3>
+          </div>
+          <p>Klarna integration lets patients split high-ticket treatments into easy payments. You receive the full amount upfront — they pay over time.</p>
+          <span class="feature__stat">2× higher average order value</span>
+        </div>
+        <div class="feature" data-r>
+          <div class="feature__header">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M12 8v4l2 1"/></svg>
+            </div>
+            <h3>Google Review Engine</h3>
+          </div>
+          <p>In-app review flow routes patients directly to your Google Business page and rewards them with loyalty points. More reviews, better rankings.</p>
+          <span class="feature__stat">Tied to loyalty rewards program</span>
+        </div>
+        <div class="feature" data-r data-d="1">
+          <div class="feature__header">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            </div>
+            <h3>Push Notifications</h3>
+          </div>
+          <p>Abandoned cart reminders, offer launches, reward expirations, cash balance alerts. Automated messages that drive action without lifting a finger.</p>
+          <span class="feature__stat">889% higher conversion than email</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROCESS ─── -->
+  <section class="s-cream" id="process">
+    <div class="wrap">
+      <div class="process__head" data-r>
+        <p class="label">How It Works</p>
+        <h2>Live in Under 48 Hours</h2>
+        <p class="section-sub">No developers. No long onboarding. We handle everything so you can focus on patients.</p>
+      </div>
+      <div class="process__steps">
+        <div class="process__step" data-r>
+          <span class="process__num">1</span>
+          <h3>We Build Your App</h3>
+          <p>Your logo, your colors, your treatments, your pricing — all configured into a fully branded app with Stripe payments ready to go.</p>
+          <span class="process__line" aria-hidden="true"></span>
+        </div>
+        <div class="process__step" data-r data-d="1">
+          <span class="process__num">2</span>
+          <h3>Patients Download & Engage</h3>
+          <p>Reception banners, QR codes, and a proven sign-up flow get patients onto the app from day one with immediate rewards.</p>
+          <span class="process__line" aria-hidden="true"></span>
+        </div>
+        <div class="process__step" data-r data-d="2">
+          <span class="process__num">3</span>
+          <h3>Revenue Grows on Autopilot</h3>
+          <p>Memberships compound, rewards drive repeat visits, and automated campaigns run in the background — while you sleep.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROOF (Number Ticker) ─── -->
+  <section class="proof s-dark">
+    <div class="wrap">
+      <p class="label" data-r>Platform Results</p>
+      <div class="proof__grid">
+        <div class="proof__stat" data-r>
+          <span class="proof__num" data-ticker data-val="2" data-suffix="×">0</span>
+          <p>Higher average order value with Buy Now, Pay Later</p>
+        </div>
+        <div class="proof__stat" data-r data-d="1">
+          <span class="proof__num" data-ticker data-val="889" data-suffix="%">0</span>
+          <p>Higher conversion rate vs. email and SMS combined</p>
+        </div>
+        <div class="proof__stat" data-r data-d="2">
+          <span class="proof__num" data-ticker data-val="51" data-suffix="%">0</span>
+          <p>Of high-ticket transactions use patient financing</p>
+        </div>
+        <div class="proof__stat" data-r data-d="3">
+          <span class="proof__num" data-ticker data-val="158" data-prefix="+" data-suffix="%">0</span>
+          <p>More sales when offers include a personal voice note</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ─── -->
+  <section class="s-cream" id="faq">
+    <div class="wrap faq__inner">
+      <div class="faq__head" data-r>
+        <p class="label">FAQ</p>
+        <h2>Common Questions</h2>
+        <p>Everything you need to know before booking a call.</p>
+      </div>
+      <div class="faq__list">
+        <details class="faq__item" data-r>
+          <summary>What exactly does Aesthera do?</summary>
+          <div class="faq__answer">We build your medspa a fully branded mobile app that your patients download to their phones. Inside, they can browse and purchase treatments, manage memberships, earn loyalty rewards, and receive personalized offers — all under your brand.</div>
+        </details>
+        <details class="faq__item" data-r data-d="1">
+          <summary>Does this replace my EMR or booking system?</summary>
+          <div class="faq__answer">No. Aesthera works alongside your existing tools — Aesthetic Record, Vagaro, Boulevard, or whatever you use. We're a patient-facing loyalty and mobile commerce layer, not a practice management replacement.</div>
+        </details>
+        <details class="faq__item" data-r data-d="1">
+          <summary>How long does setup take?</summary>
+          <div class="faq__answer">Most apps are live within 48 hours. We handle all configuration — your branding, treatments, pricing, payment processing, and rewards program. You just review and approve.</div>
+        </details>
+        <details class="faq__item" data-r data-d="2">
+          <summary>Is this a good fit for a solo medspa?</summary>
+          <div class="faq__answer">It's designed specifically for solo, owner-operated medspas. You don't need a marketing team or technical staff. The app runs automated campaigns and rewards while you focus on treating patients.</div>
+        </details>
+        <details class="faq__item" data-r data-d="2">
+          <summary>What kind of support do I get?</summary>
+          <div class="faq__answer">Aesthera offers hands-on, dedicated support from day one — no ticket systems, no chatbots, no waiting. We handle your entire setup, walk you through onboarding personally, and stay available as your practice grows. You're not a customer. You're a partner.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CTA ─── -->
+  <section class="cta s-dark" id="cta">
+    <div class="wrap">
+      <p class="label" style="justify-content:center" data-r>Get Started</p>
+      <h2 data-r>Ready to Stop Losing Patients?</h2>
+      <p class="section-sub" data-r data-d="1" style="text-align:center;margin-inline:auto">
+        Book a free, no-pressure consultation. We'll show you exactly how Aesthera would work for your medspa — and what kind of revenue you're leaving on the table.
+      </p>
+      <a href="" onclick="Calendly.initPopupWidget({url:'https://calendly.com/abraham-aesthera/30min'});return false;" class="btn btn--gold btn--lg" data-r data-d="2">
+        Book Your Free Consultation
+        <span class="btn__arrow">→</span>
+      </a>
+      <p class="cta__note" data-r data-d="2">No commitment. No credit card. Just a conversation about your medspa.</p>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <div class="footer__brand">
+        <svg width="22" height="22" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+          <polygon points="50,6 94,92 6,92" fill="#C9A84C"/>
+          <polygon points="50,34 74,80 26,80" fill="#011227"/>
+        </svg>
+        <span>AESTHERA</span>
+      </div>
+      <p class="footer__copy">© 2026 Aesthera. All rights reserved.</p>
+      <div class="footer__links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // Mobile menu
+    const toggle = document.getElementById('navToggle');
+    const menu = document.getElementById('mobileMenu');
+    function toggleMenu() {
+      toggle.classList.toggle('active');
+      menu.classList.toggle('active');
+      document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+    }
+    toggle.addEventListener('click', toggleMenu);
+
+    // Scroll reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('shown');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('[data-r]').forEach(el => io.observe(el));
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+
+    // ── Magic Card mouse tracking ──
+    document.querySelectorAll('.magic-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--mx', '-250px');
+        card.style.setProperty('--my', '-250px');
+      });
+    });
+
+    // ── Number Ticker ──
+    const tickerIO = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const el = e.target;
+          const target = parseInt(el.dataset.val, 10);
+          const suffix = el.dataset.suffix || '';
+          const prefix = el.dataset.prefix || '';
+          const duration = target > 100 ? 2200 : 1600;
+          const start = performance.now();
+          function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+          function tick(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const current = Math.round(easeOutQuart(progress) * target);
+            el.textContent = prefix + current.toLocaleString() + suffix;
+            if (progress < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+          tickerIO.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('[data-ticker]').forEach(el => tickerIO.observe(el));
+  </script>
+  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+</body>
+</html>

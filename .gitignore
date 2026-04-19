@@ -1,0 +1,12 @@
+.env
+node_modules/
+test-results/
+.DS_Store
+*.log
+.claude/
+landing.html
+phone-final.jpg
+phone-hq.jpg
+phone-v2.jpg
+aesthera logo without bg .png
+Mobile Phone Final Image.png
